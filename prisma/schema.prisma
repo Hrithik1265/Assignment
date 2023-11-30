@@ -9,3 +9,32 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model test {
+  id       Int      @id @default(autoincrement())
+  subject String
+  grade String
+  type String
+  totalMarks Int
+  questions Question[] // One-to-many relationship with Question
+}
+
+// Prisma schema.prisma
+
+
+model Question {
+  id            String  @id @default(uuid())
+  testId        Int
+  type          String
+  questionText  String
+  answer1       String
+  answer2       String
+  answer3       String
+  answer4       String
+  correctAnswer String
+  marks         Int
+
+  test test  @relation(fields: [testId], references: [id])
+}
+
+
