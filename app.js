@@ -86,25 +86,3 @@ app.delete('/api/v1/hod/group/subject', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-
-//POST :
-//https://api.iqlabsacademy.com/424f_0659/api/v1/hod/subject/
-//{
-//   "subject_name": "Math 2",
-//   "category": "DEG",
-//   "sub_category": "ENG",
-//   "discipline": "CS",
-//   "level": "002",
-//   "subject": "SOM"
-// }
-
-//GET
-//https://api.iqlabsacademy.com/424f_0659/api/v1/hod/subject/.
-
-
-//DELETE
-//https://api.iqlabsacademy.com/424f_0659/api/v1/hod/group/subject/
-// {
-//   "subject_ids": ["656c2438e6c10b997d06c0e3"]
-// }
