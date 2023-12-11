@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output = "app.js"
+}
+
+datasource assignment {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users{
+  id String @id @unique @db.VarChar(40) @default(uuid())
+  name String @db.VarChar(100)
+  email String @db.VarChar(255)
+  is_hod Boolean
+  is_teacher Boolean
+  country_code String @db.VarChar(5)
+  phone_num String @db.VarChar(15)
+  is_active Boolean
+  password_last_change DateTime
+  secondary_email String @db.VarChar(255)
+  secondary_phone_num String @db.VarChar(15)
+  gender String @db.VarChar(5)
+  student_roll_no String @db.VarChar(10)
+  is_independent_student Boolean  @default(false)
+  created_by String
+  terms_and_condition Boolean
+}
+
+model SubjectMaster{
+  id String @id @db.VarChar(40) @default(uuid())
+  category String @db.VarChar(200)
+  subCategory String @db.VarChar(200)
+  dicipline String @db.VarChar(200)
+  level String @db.VarChar(200)
+  subName String @db.VarChar(200)
+  subject Subject[]
+}
+
+model Category{
+  categoryID String @id @unique
+  categoryTitle String
+  subCategory SubCategory[]
+  discipline Discipline[]
+  levels Levels[]
+  subjectList SubjectList[]
+}
+
+model SubCategory{
+  id String @id @default(uuid())
+  category Category @relation(fields: [categoryID],references: [categoryID])
+  categoryID String
+  SubCategoryID String
+  SubCategoryTitle String
+  discipline Discipline[]
+  levels Levels[]
+  subjectList SubjectList[]
+}
+
+model Discipline{
+  id String @id @default(uuid())
+  category Category @relation(fields: [categoryID],references: [categoryID])
+  categoryID String
+  subCategory SubCategory @relation(fields: [subCategoryID], references: [id])
+  subCategoryID String
+  disciplineID String
+  disciplineTitle String
+}
+
+model Levels{
+  id String @id @default(uuid())
+  category Category @relation(fields: [categoryID],references: [categoryID])
+  categoryID String
+  subCategory SubCategory @relation(fields: [subCategoryID], references: [id])
+  subCategoryID String
+  levelID String
+  levelTitle String
+}
+
+model SubjectList{
+  id String @id @default(uuid())
+  category Category @relation(fields: [categoryID],references: [categoryID])
+  categoryID String
+  subCategory SubCategory @relation(fields: [subCategoryID], references: [id])
+  subCategoryID String
+  subjectId String
+  subjectTitle String
+}
+
+model Subject {
+  id            String        @id @default(uuid())
+  description   String        @db.VarChar(255)
+  subjectMaster SubjectMaster @relation(fields: [subjectId], references: [id])
+  subjectId     String
+  chapters      String
+  semesters     String
+}
+
