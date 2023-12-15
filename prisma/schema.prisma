@@ -9,3 +9,120 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Users{
+  id String @id @unique @db.VarChar(40) @default(uuid())
+  name String @db.VarChar(50)
+  email String @db.VarChar(50)
+  is_hod Boolean
+  is_teacher Boolean
+  country_code String @db.VarChar(5)
+  phone_num String @db.VarChar(15)
+  is_active Boolean
+  password_last_change DateTime
+  secondary_email String @db.VarChar(50)
+  secondary_phone_num String @db.VarChar(15)
+  gender String @db.VarChar(5)
+  student_roll_no String @db.VarChar(10)
+  is_independent_student Boolean  @default(false)
+  created_by String
+  terms_and_condition Boolean
+}
+
+model Teacher {
+  id                     String         @id @default(uuid())
+  email                  String         @unique
+  userName               String         @unique
+  password               String
+  agreeToTerms           Boolean
+  sentNotifications      Notification[] @relation("TeacherNotifications_sender")
+  receivedNotifications  Notification[] @relation("TeacherNotifications_receiver")
+}
+model Notification {
+  id           Int      @id @default(autoincrement())
+  message      String
+  senderId     String   // Define senderId
+  receiverId   String   // Define receiverId
+  createdAt    DateTime @default(now())
+
+  sender       Teacher  @relation("TeacherNotifications_sender", fields: [senderId], references: [id])
+  receiver     Teacher  @relation("TeacherNotifications_receiver", fields: [receiverId], references: [id])
+}
+
+
+model Subject {
+  id             String        @id @db.VarChar(40) @default(uuid())
+  description    String        @db.VarChar(255)
+  subjectMaster  SubjectMaster @relation(fields: [subjectId], references: [id])
+  subjectId      String
+  chapters       String
+  semesters      String
+
+  @@map("Subject")
+}
+
+model SubjectMaster {
+  id          String      @id @db.VarChar(40) @default(uuid())
+  category    String      @db.VarChar(200)
+  subCategory String      @db.VarChar(200)
+  discipline  String      @db.VarChar(200)
+  level       String      @db.VarChar(200)
+  subName     String      @db.VarChar(200)
+  subjects    Subject[]
+
+  @@map("SubjectMaster")
+}
+
+
+
+
+
+model Category{
+  categoryID String @id @unique
+  categoryTitle String
+  subCategory SubCategory[]
+  discipline Discipline[]
+  levels Levels[]
+  subjectList SubjectList[]
+}
+
+model SubCategory{
+  id String @id @default(uuid())
+  category Category @relation(fields: [categoryID],references: [categoryID])
+  categoryID String
+  SubCategoryID String
+  SubCategoryTitle String
+  discipline Discipline[]
+  levels Levels[]
+  subjectList SubjectList[]
+}
+
+model Discipline{
+  id String @id @default(uuid())
+  category Category @relation(fields: [categoryID],references: [categoryID])
+  categoryID String
+  subCategory SubCategory @relation(fields: [subCategoryID], references: [id])
+  subCategoryID String
+  disciplineID String
+  disciplineTitle String
+}
+
+model Levels{
+  id String @id @default(uuid())
+  category Category @relation(fields: [categoryID],references: [categoryID])
+  categoryID String
+  subCategory SubCategory @relation(fields: [subCategoryID], references: [id])
+  subCategoryID String
+  levelID String
+  levelTitle String
+}
+
+model SubjectList{
+  id String @id @default(uuid())
+  category Category @relation(fields: [categoryID],references: [categoryID])
+  categoryID String
+  subCategory SubCategory @relation(fields: [subCategoryID], references: [id])
+  subCategoryID String
+  subjectId String
+  subjectTitle String
+}
